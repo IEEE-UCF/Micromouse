@@ -4,3 +4,6 @@ We are developing a small, fully autonomous robot to participate in Micromouse c
 
 **Link to past meetings' slides:**
 https://drive.google.com/drive/folders/17rKM4HO3MfALglRk9HUaU1-rCqVxV7BP?usp=sharing
+
+**Pathfinding Algorithm:**
+[FloodFill Branch](https://github.com/IEEE-UCF/Micromouse/tree/FloodFill)
