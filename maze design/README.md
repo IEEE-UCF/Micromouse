@@ -1,4 +1,4 @@
-#Notes for Maze Design:
+# Notes for Maze Design:
 
 **Micromouse competition maze specification** (From the official rules):
 - The maze is composed of 18cm x 18cm unit squares arranged as 16 x 16 units.
