@@ -1,0 +1,31 @@
+name: micromouse_project
+
+services:
+  ros-dev:
+    build:
+      context: .
+      args:
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
+    container_name: micromouse_sim
+
+    # Automatically restart unless stopped manually
+    restart: unless-stopped
+
+    # Mount your project folder into the ROS workspace
+    volumes:
+      - .:/home/ros/ros2_ws/src
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./mazes:/home/ros/mazes
+
+    # Environment variables for GUI (VcXsrv)
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+
+    # Keep container alive (so you can exec into it)
+    command: tail -f /dev/null
+
+    # Use host network so GUI apps can connect to X server
+    network_mode: host
+
