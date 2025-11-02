@@ -54,6 +54,19 @@ RUN \
 
 # Source all environments automatically for interactive terminals
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /home/ros/.bashrc && \
-    echo "export GZ_GUI_PLUGIN_PATH=/home/ros/ros2_ws/src/Ratada/gz_ws/install/gui" >> /home/ba..bashrc && \
+    echo "export GZ_GUI_PLUGIN_PATH=/home/ros/ros2_ws/src/Ratada/gz_ws/install/gui" >> /home/ros/.bashrc && \
     echo "export GZ_SIM_SYSTEM_PLUGIN_PATH=/home/ros/ros2_ws/src/Ratada/gz_ws/install/system" >> /home/ros/.bashrc && \
-    echo "source /home/ros/ros2_ws/src/Ratada/ros_ws/install/setup.bash" >> /home/ros/.bashrc
+    echo "source /home/ros/ros2_ws/src/Ratada/ros2_ws/install/setup.bash" >> /home/ros/.bashrc
+
+CMD ["/bin/bash"]
+
+# docker build -t ros-ratada-env .
+#
+#docker run -it --rm `
+#    --name ratada_sim_container `
+#    --privileged `
+#    --net=host `
+#    -e DISPLAY=host.docker.internal:0.0 `
+#    -v /tmp/.X11-unix:/tmp/.X11-unix:rw `
+#    ros-ratada-env `
+#    /bin/bash
