@@ -12,6 +12,7 @@ This project is managed via a Docker container and uses a PowerShell helper scri
 
 * **Docker & Docker Compose:** Required for orchestrating and running the containerized development environment.
 * **PowerShell:** The helper script (`dev.ps1`) is written in PowerShell.
+* **Windows Users Only: X Server (VcXsrv):** Required for displaying the Gazebo/Ignition GUI from the Linux container onto your Windows desktop. You must install and configure VcXsrv before launching the container.
 
 ### Setup and Build
 
@@ -23,6 +24,15 @@ This project is managed via a Docker container and uses a PowerShell helper scri
     ```bash
     .\dev.ps1 -Up
     ```
+
+### VcXsrv Configuration (Windows Users)
+
+Before starting the container (`-Up` command), you must configure VcXsrv to allow the Docker container to connect:
+
+1.  **Launch VcXsrv** with the following settings (usually via the XLaunch wizard):
+    * **Display Settings:** Choose "Disable access control" (required for Docker).
+    * **Extra Settings:** Check "Disable access control."
+2.  The `dev.ps1` script relies on the environment variable **`DISPLAY`** being set correctly in your PowerShell terminal to direct the GUI output to VcXsrv.
 
 ---
 
@@ -37,6 +47,20 @@ The primary way to interact with the environment is through the `dev.ps1` helper
 | **-Shell** | Opens an interactive bash session inside the running container. | `.\dev.ps1 -Shell` |
 | **-Logs** | Follows the container's logs (use `Ctrl+C` to stop). | `.\dev.ps1 -Logs` |
 | **-Down** | Stops and removes the container. | `.\dev.ps1 -Down` |
+
+<br>
+
+## Manual Docker Commands
+
+If you prefer not to use the PowerShell script, you can manage the container directly with `docker-compose`.
+
+| Action | Command | Corresponds to `dev.ps1` |
+| :--- | :--- | :--- |
+| **Build Image** | `docker-compose build` | `-Build` |
+| **Start Container** | `docker-compose up -d` | `-Up` |
+| **Open Shell** | `docker-compose exec ros-dev /bin/bash` | `-Shell` |
+| **Follow Logs** | `docker-compose logs -f ros-dev` | `-Logs` |
+| **Stop & Remove** | `docker-compose down` | `-Down` |
 
 ---
 
