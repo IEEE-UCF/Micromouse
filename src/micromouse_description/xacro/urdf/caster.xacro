@@ -1,0 +1,31 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:macro name="sphere_inertia" params="m r">
+  <inertial>
+    <mass value="${m}"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <inertia ixx="${(2.0*m*r*r) / 5.0}" ixy="0.0" ixz="0.0"
+             iyy="${(2.0*m*r*r) / 5.0}" iyz="0.0"
+             izz="${(2.0*m*r*r) / 5.0}"/>
+  </inertial>
+</xacro:macro>
+
+<xacro:macro name="caster" params="name rpy xyz radius density">
+  <link name="${name}">
+    <visual>
+      <origin rpy="${rpy}" xyz="${xyz}"/>
+      <geometry>
+        <sphere radius="${radius}"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin rpy="${rpy}" xyz="${xyz}"/>
+      <geometry>
+        <sphere radius="${radius}"/>
+      </geometry>
+    </collision>
+    <!-- sphere volume = 4/3 * pi * r^3 -->
+    <xacro:sphere_inertia m="${(4.0/3.0) * pi * radius*radius*radius * density}" r="${radius}"/>
+  </link>
+</xacro:macro>
+</robot>

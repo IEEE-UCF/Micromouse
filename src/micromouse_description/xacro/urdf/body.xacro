@@ -1,0 +1,31 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:macro name="box_inertia" params="m l w h">
+  <inertial>
+    <mass value="${m}"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <inertia ixx="${(m/12.0) * (w*w + h*h)}" ixy="0.0" ixz="0.0"
+             iyy="${(m/12.0) * (l*l + h*h)}" iyz="0.0"
+             izz="${(m/12.0) * (l*l + w*w)}"/>
+  </inertial>
+</xacro:macro>
+
+<xacro:macro name="body" params="name rpy xyz x y z density">
+  <link name="${name}">
+    <visual>
+      <origin rpy="${rpy}" xyz="${xyz}"/>
+      <geometry>
+        <box size="${x} ${y} ${z}"/>
+      </geometry>
+      <material name="Red"/>
+    </visual>
+    <collision>
+      <origin rpy="${rpy}" xyz="${xyz}"/>
+      <geometry>
+        <box size="${x} ${y} ${z}"/>
+      </geometry>
+    </collision>
+    <!-- mass = x*y*z*density -->
+    <xacro:box_inertia m="${x*y*z*density}" l="${x}" w="${y}" h="${z}"/>
+  </link>
+</xacro:macro>
+</robot>

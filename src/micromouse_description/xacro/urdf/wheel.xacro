@@ -1,0 +1,32 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:macro name="cylinder_inertia" params="m r h">
+  <inertial>
+    <mass value="${m}"/>
+    <!-- rotated so cylinder axis aligns as expected -->
+    <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+    <inertia ixx="${(m/12.0) * (3.0*r*r + h*h)}" ixy="0.0" ixz="0.0"
+             iyy="${(m/12.0) * (3.0*r*r + h*h)}" iyz="0.0"
+             izz="${(m*r*r) / 2.0}"/>
+  </inertial>
+</xacro:macro>
+
+<xacro:macro name="wheel" params="name rpy xyz radius length density">
+  <link name="${name}">
+    <visual>
+      <origin rpy="${rpy}" xyz="${xyz}"/>
+      <geometry>
+        <cylinder radius="${radius}" length="${length}"/>
+      </geometry>
+      <material name="Yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="${rpy}" xyz="${xyz}"/>
+      <geometry>
+        <cylinder radius="${radius}" length="${length}"/>
+      </geometry>
+    </collision>
+    <!-- cylinder mass = pi * r^2 * length * density -->
+    <xacro:cylinder_inertia m="${pi * radius*radius * length * density}" r="${radius}" h="${length}"/>
+  </link>
+</xacro:macro>
+</robot>

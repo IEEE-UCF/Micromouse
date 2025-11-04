@@ -1,4 +1,13 @@
-Ratada/gz_ws/build/
-Ratada/gz_ws/install/
-Ratada/gz_ws/log/
+# Colcon Build System Artifacts
+# Ignore build, install, and log directories created by colcon
+/build/
+/install/
+/log/
+
+# IDE Configuration
 .idea/
+.vscode/
+
+# External Tools & System Files
+*.swp
+*~
