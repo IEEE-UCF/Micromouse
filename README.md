@@ -1,99 +1,192 @@
 # Micromouse ROS 2 Development Environment
 
-This repository contains the configuration and source files for simulating a micromouse robot using ROS 2 (Jazzy) and Gazebo/Ignition.
+This repository provides a complete Docker-based development and simulation environment for the IEEE UCF Micromouse robot using **ROS 2 Jazzy** and **Gazebo/Ignition**. 
 
 ---
 
-## Getting Started
-
-This project is managed via a Docker container and uses a PowerShell helper script (`dev.ps1`) for seamless environment control.
-
-### Prerequisites
-
-* **Docker & Docker Compose:** Required for orchestrating and running the containerized development environment.
-* **PowerShell:** The helper script (`dev.ps1`) is written in PowerShell.
-* **Windows Users Only: X Server (VcXsrv):** Required for displaying the Gazebo/Ignition GUI from the Linux container onto your Windows desktop. You must install and configure VcXsrv before launching the container.
-
-### Setup and Build
-
-1.  **Build the Docker Image:** This creates the 'micromouse\_sim' image containing ROS 2 Jazzy, Gazebo, and all dependencies.
-    ```bash
-    .\dev.ps1 -Build
-    ```
-2.  **Start the Container:** Start the 'ros-dev' container in the background.
-    ```bash
-    .\dev.ps1 -Up
-    ```
-
-### VcXsrv Configuration (Windows Users)
-
-Before starting the container (`-Up` command), you must configure VcXsrv to allow the Docker container to connect:
-
-1.  **Launch VcXsrv** with the following settings (usually via the XLaunch wizard):
-    * **Display Settings:** Choose "Disable access control" (required for Docker).
-    * **Extra Settings:** Check "Disable access control."
-2.  The `dev.ps1` script relies on the environment variable **`DISPLAY`** being set correctly in your PowerShell terminal to direct the GUI output to VcXsrv.
+## Table of Contents
+* [1. Prerequisites](#1-prerequisites)
+* [2. Clone the Repository](#2-clone-the-repository)
+* [3. Configure and Start VcXsrv](#3-configure-and-start-vcxsrv)
+* [4. Using `dev.ps1`](#4-using-devps1)
+* [5. Building and Running the Simulation](#5-building-and-running-the-simulation)
+* [6. Robot Configuration](#6-robot-configuration)
+* [7. Manual Docker Commands](#7-manual-docker-commands)
+* [8. Repository Structure](#8-repository-structure)
+* [9. Troubleshooting](#9-troubleshooting)
+* [10. Recommended System Resources](#10-recommended-system-resources)
 
 ---
 
-## Usage
+## 1. Prerequisites
 
-The primary way to interact with the environment is through the `dev.ps1` helper script.
+Before starting, install and configure:
 
-| Command | Description | Example |
-| :--- | :--- | :--- |
-| **-Build** | Builds the Docker image. | `.\dev.ps1 -Build` |
-| **-Up** | Starts the container in detached mode. | `.\dev.ps1 -Up` |
-| **-Shell** | Opens an interactive bash session inside the running container. | `.\dev.ps1 -Shell` |
-| **-Logs** | Follows the container's logs (use `Ctrl+C` to stop). | `.\dev.ps1 -Logs` |
-| **-Down** | Stops and removes the container. | `.\dev.ps1 -Down` |
+### 1.1 WSL 2
+Required for Docker Desktop. Install using [Microsoft’s guide](https://learn.microsoft.com/en-us/windows/wsl/install).
 
-<br>
+### 1.2 Docker Desktop
+Download from [Docker](https://www.docker.com/products/docker-desktop/) and enable **WSL 2 backend**.
 
-## Manual Docker Commands
+### 1.3 VcXsrv (X Server)
+Required to display Gazebo/Ignition GUI from Linux container to Windows. Download from [SourceForge](https://sourceforge.net/projects/vcxsrv/).
 
-If you prefer not to use the PowerShell script, you can manage the container directly with `docker-compose`.
-
-| Action | Command | Corresponds to `dev.ps1` |
-| :--- | :--- | :--- |
-| **Build Image** | `docker-compose build` | `-Build` |
-| **Start Container** | `docker-compose up -d` | `-Up` |
-| **Open Shell** | `docker-compose exec ros-dev /bin/bash` | `-Shell` |
-| **Follow Logs** | `docker-compose logs -f ros-dev` | `-Logs` |
-| **Stop & Remove** | `docker-compose down` | `-Down` |
+### 1.4 Git
+Required to clone the repository. Download from [git-scm.com](https://git-scm.com/install/windows).
 
 ---
 
-## Workspace Build and Run
+## 2. Clone the Repository
 
-The `build_workspace.sh` script handles package installation and compilation within the container.
+Open **PowerShell** and run:
 
-1.  **Enter the Container Shell:**
-    ```bash
-    .\dev.ps1 -Shell
-    ```
-
-2.  **Build the Workspace:** This installs ROS dependencies (`rosdep install`) and compiles the workspace using `colcon build --merge-install`.
-    ```bash
-    bash build_workspace.sh
-    ```
-
-### Launching the Simulation
-
-To launch the robot in Gazebo/Ignition, use one of the following methods from within the container shell:
-
-| Method | Command | Description |
-| :--- | :--- | :--- |
-| **Direct Launch** | `bash build_workspace.sh --run` | Executes the build, automatically sources the workspace, generates the URDF using `xacro`, and launches the simulation. |
-| **Manual Launch** | `source install/setup.bash` | Used after a successful build to load the ROS environment variables. |
-| | `ros2 launch micromouse_description micromouse_launch.py` | Launches the Gazebo world and the robot model. |
+```powershell
+git clone https://github.com/IEEE-UCF/Micromouse.git
+cd Micromouse
+git checkout ROS2
+````
 
 ---
 
-## ⚙️ Robot Configuration Notes
+## 3. Configure and Start VcXsrv
 
-The robot's structure and behavior are defined across several XACRO files:
+Before starting the container:
 
-* **`micromouse_robot.urdf.xacro` (Main File):** Defines the geometry, materials, links, and joints with the final stable geometry for $1 \text{mm}$ ground clearance.
-* **`micromouse_robot.gazebo.xacro`:** Defines friction coefficients, system plugins (Diff Drive, IMU System), and uses **stable Ultrasonic Ray Sensors** instead of crash-prone custom/LiDAR definitions.
-* **`body.xacro`, `wheel.xacro`, `caster.xacro`:** Define the link structure and custom inertia macros.
+1. Launch **XLaunch** (VcXsrv wizard).
+2. Display settings: *Multiple windows*
+3. Client startup: *Start no client*
+4. Extra settings: **Disable access control** (critical)
+5. Finish setup; VcXsrv icon appears in system tray.
+
+---
+
+## 4. Using `dev.ps1`
+
+`dev.ps1` helps manage the Docker container. Commands:
+
+| Command  | Description                                     |
+| -------- | ----------------------------------------------- |
+| `-Build` | Build the Docker image                          |
+| `-Up`    | Start container in detached mode                |
+| `-Shell` | Open bash shell in container (with DISPLAY set) |
+| `-Logs`  | Follow container logs                           |
+| `-Down`  | Stop and remove container                       |
+
+Example:
+
+```powershell
+# Build Docker image
+.\dev.ps1 -Build
+
+# Start container
+.\dev.ps1 -Up
+
+# Open container shell
+.\dev.ps1 -Shell
+
+# Follow logs
+.\dev.ps1 -Logs
+
+# Stop container
+.\dev.ps1 -Down
+```
+
+---
+
+## 5. Building and Running the Simulation
+
+
+### 5.1 Enter Container Shell
+
+```powershell
+.\dev.ps1 -Shell
+```
+
+Prompt example:
+
+```
+root@ros-dev:/app#
+```
+
+All commands below are executed **inside the container shell**.
+
+### 5.2 Build the Workspace and Launch Simulation
+
+#### Option A: Full Build + Run
+
+```bash
+bash build_workspace.sh --run
+```
+
+#### Option B: Manual Launch
+
+```bash
+bash build_workspace.sh
+source install/setup.bash
+ros2 launch micromouse_description micromouse_launch.py
+```
+
+---
+
+## 6. Robot Configuration
+
+XACRO files define the robot:
+
+* `micromouse_robot.urdf.xacro` 
+* `micromouse_robot.gazebo.xacro`
+* `body.xacro`, `wheel.xacro`, `caster.xacro`
+
+---
+
+## 7. Manual Docker Commands
+
+| Action          | Command                                 | Equivalent |
+| --------------- | --------------------------------------- | ---------- |
+| Build image     | `docker-compose build`                  | -Build     |
+| Start container | `docker-compose up -d`                  | -Up        |
+| Open shell      | `docker-compose exec ros-dev /bin/bash` | -Shell     |
+| Follow logs     | `docker-compose logs -f ros-dev`        | -Logs      |
+| Stop & remove   | `docker-compose down`                   | -Down      |
+
+---
+
+## 8. Repository Structure
+
+```
+.
+├── .gitignore               # Files and folders for Git to ignore
+├── Dockerfile               # Defines the main Docker image with ROS 2, Gazebo, & deps
+├── LICENSE                  # Project license
+├── Micromouse competition rules.pdf # Rules PDF for the competition
+├── README.md                # This documentation file
+├── build_workspace.sh       # (Inside container) Script to build the ROS 2 workspace
+├── cyclonedds.xml           # Configuration for the ROS 2 middleware
+├── dev.ps1                  # (On host) PowerShell helper script for managing Docker
+├── docker-compose.yaml      # Defines the `ros-dev` container service
+├── mazes/                   # Files for different maze layouts
+└── src/                     # All ROS 2 source code and packages
+    ├── encoder_gz_sensor/   # Gazebo plugin for a custom encoder sensor
+    ├── encoder_gz_system/   # Gazebo plugin for the encoder system
+    ├── micromouse_description/ # Contains the robot's URDF/XACRO model files
+    ├── micromouse_gz_gui/   # Custom Gazebo GUI plugins
+    └── micromouse_gz_system/  # Core Gazebo system plugins (diff drive, IMU, etc.)
+```
+
+---
+
+## 9. Troubleshooting
+
+* Gazebo not opening: ensure VcXsrv running, DISPLAY auto-set, access control disabled
+* Black/frozen GUI: restart VcXsrv
+* Docker fails: ensure WSL2 backend active, run `wsl --shutdown`
+* Build failures: `.\dev.ps1 -Down` then `.\dev.ps1 -Build`
+
+---
+
+## 10. Recommended System Resources
+
+* Quad-core CPU or better
+* 8 GB RAM minimum (16 GB preferred)
+* Hardware acceleration enabled
+
+---
