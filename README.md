@@ -180,13 +180,3 @@ XACRO files define the robot:
 * Black/frozen GUI: restart VcXsrv
 * Docker fails: ensure WSL2 backend active, run `wsl --shutdown`
 * Build failures: `.\dev.ps1 -Down` then `.\dev.ps1 -Build`
-
----
-
-## 10. Recommended System Resources
-
-* Quad-core CPU or better
-* 8 GB RAM minimum (16 GB preferred)
-* Hardware acceleration enabled
-
----
