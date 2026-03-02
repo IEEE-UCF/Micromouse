@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+echo -e "${BLUE}Updating local Software branch...${NC}"
+git checkout software
+git pull origin software
+
+echo -n "Enter a short name for your feature (e.g., pid-fix, ir-sensors): "
+read FEATURE_NAME
+
+BRANCH_NAME="feature/$FEATURE_NAME"
+
+echo -e "${BLUE}Creating branch: $BRANCH_NAME${NC}"
+git checkout -b "$BRANCH_NAME"
+
+git add .
+
+echo -n "Enter your commit message: "
+read COMMIT_MSG
+
+git commit -m "$COMMIT_MSG"
+echo -e "${BLUE}Pushing to GitHub...${NC}"
+git push -u origin "$BRANCH_NAME"
+
+echo -e "${GREEN}Go to https://github.com/IEEE-UCF/Micromouse to open your PR.${NC}"
