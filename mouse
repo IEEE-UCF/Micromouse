@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+usage() {
+  echo -e "${BLUE}Micromouse CLI Wrapper${NC}"
+  echo "Usage: ./mouse [command]"
+  echo ""
+  echo "Commands:"
+  echo "  test    - Run native logic tests (Desktop GCC)"
+  echo "  build   - Compile firmware for Arduino Nano (AVR)"
+  echo "  upload  - Compile and flash to the Nano"
+  echo "  monitor - Open Serial Monitor"
+  echo "  clean   - Remove all build/test artifacts"
+  exit 1
+}
+
+case "$1" in
+test)
+  echo -e "${GREEN}==> Running Native Logic Tests...${NC}"
+  pio test -e native
+  ;;
+build)
+  echo -e "${GREEN}==> Compiling Arduino Nano Firmware...${NC}"
+  pio run -e nanoatmega328new
+  ;;
+upload)
+  echo -e "${GREEN}==> Flashing Nano...${NC}"
+  pio run -e nanoatmega328new --target upload
+  ;;
+monitor)
+  echo -e "${BLUE}==> Opening Serial Monitor...${NC}"
+  pio device monitor
+  ;;
+clean)
+  echo -e "${RED}==> Cleaning Build Artifacts...${NC}"
+  pio run --target clean
+  rm -rf .pio
+  ;;
+*)
+  usage
+  ;;
+esac

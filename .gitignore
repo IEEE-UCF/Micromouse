@@ -1,0 +1,16 @@
+# .gitignore
+
+.pio/
+.pioenvs/
+.piolibdeps/
+.vscode/
+include/README
+lib/README
+
+*.o
+*.elf
+*.bin
+*.hex
+
+.DS_Store
+Thumbs.db
