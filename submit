@@ -4,17 +4,13 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo -e "${BLUE}Updating local Software branch...${NC}"
-git checkout software
-git pull origin software
-
 echo -n "Enter a short name for your feature (e.g., pid-fix, ir-sensors): "
 read FEATURE_NAME
 
 BRANCH_NAME="feature/$FEATURE_NAME"
 
 echo -e "${BLUE}Creating branch: $BRANCH_NAME${NC}"
-git checkout -b "$BRANCH_NAME"
+git checkout -B "$BRANCH_NAME"
 
 git add .
 
