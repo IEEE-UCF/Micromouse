@@ -1,5 +1,7 @@
 #include <unity.h>
 
+#include "encoders.h"
+
 void setUp(void) {}
 
 void tearDown(void) {}
