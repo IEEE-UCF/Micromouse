@@ -16,11 +16,15 @@ The walls are connected to the posts by gluing connectors to both sides of each 
 **Math**:
 - Maximum number of walls: 1+64*3 = 193
 - Typical number of walls: Probably less than 100
-- Length of walls = 18 cm - 2\*(0.5\*post width + connector width) = 17.111 cm = 6.736614 ~= 6 3/4 in
+- Length of walls = 18 cm - 2\*(0.5\*post width + connector width) = 17.111 cm = 6.736614 in ~= 6 3/4 in
 - Number of walls given from cutting the the rightmost rectangle on the maze cutout picture: 5\*(8 ft/length of walls) = 5\*(8 ft/6.73 in ) = 70 (enough for now)
 - Number of posts needed: 9\*9 = 81
 - Number of connectors needed = Number of walls \* 2 = 70\*2 = 140
 - Post hole diameter: Can be anything as long as it fits inside the post. I chose 0.25 inches because I have a drill bit that size.
+
+**Updated Math for New Post Design**:
+- Length of walls = 18cm - (post width + connector width) = 6.536614 in = 16.6 cm
+    - This is a maximum measurement. The cut wall cannot be any longer than this but it can be up to ~ 0.1 in/0.25 cm less so we will cut the walls to the length of 6.5 in/16.5 cm. The new design allows for a little wiggle room so that the cuts can vary a little bit.
 
 **Extra Notes**:
 The walls are supposed to be 5 cm (2 in) high but ours are closer to 4.5 cm (1.75 in) because I sanded the boards to be the same height. I don't think this will be a problem.
